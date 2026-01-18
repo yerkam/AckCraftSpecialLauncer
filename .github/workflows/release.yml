@@ -1,0 +1,36 @@
+name: Build and Release Launcher
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # v1.0.0, v1.0.1 gibi tag'ler için çalışır
+
+jobs:
+  release:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build Electron app
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build
+      
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.exe
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

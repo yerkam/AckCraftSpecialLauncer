@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özel MC Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sol Panel */
+        .left-panel {
+            width: 310px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-section {
+            height: 80px;
+            background: #2ecc71;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-section {
+            flex: 1;
+            background: #ffffff;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .user-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .username {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .status {
+            font-size: 14px;
+            color: #95a5a6;
+            text-align: center;
+        }
+
+        .play-section {
+            height: 100px;
+            background: #e74c3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .play-section:hover {
+            background: #c0392b;
+        }
+
+        .play-section.disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .play-button {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: white;
+        }
+
+        /* Sağ Panel */
+        .right-panel {
+            flex: 1;
+            background: #888888;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .patch-notes-header {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #ffffff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .patch-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #f5f5f5;
+        }
+
+        .patch-content h3 {
+            color: #ffffff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Giriş Ekranı */
+        .login-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            width: 400px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #34495e;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Güncelleme Popup */
+        .update-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            min-width: 400px;
+            display: none;
+        }
+
+        .update-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .update-message {
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .update-button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .update-button:hover {
+            background: #2980b9;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Giriş Ekranı -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-title">🎮 Giriş Yap</div>
+            <div class="input-group">
+                <label>Kullanıcı Adı</label>
+                <input type="text" id="usernameInput" placeholder="Kullanıcı adınızı girin">
+            </div>
+            <div class="input-group">
+                <label>Şifre</label>
+                <input type="password" id="passwordInput" placeholder="Şifrenizi girin">
+            </div>
+            <button class="login-button" id="loginButton">Giriş Yap</button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <!-- Güncelleme Popup -->
+    <div class="update-popup" id="updatePopup">
+        <div class="update-title">⚡ Güncelleme Mevcut</div>
+        <div class="update-message" id="updateMessage">
+            Yeni bir sürüm mevcut. Güncellemek ister misiniz?
+        </div>
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+        <button class="update-button" id="updateButton">Güncelle</button>
+    </div>
+
+    <!-- Ana Launcher -->
+    <div class="container hidden" id="mainContainer">
+        <div class="left-panel">
+            <div class="logo-section">
+                ÖZEL MC LAUNCHER
+            </div>
+            <div class="user-section">
+                <img src="https://crafthead.net/helm/Steve/140" class="user-avatar" id="userAvatar">
+                <div class="username" id="displayUsername">Oyuncu</div>
+                <div class="status">Hazır</div>
+            </div>
+            <div class="play-section" id="playSection">
+                <div class="play-button" id="playButton">OYNA</div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="patch-notes-header">📋 Yama Notları</div>
+            <div class="patch-content" id="patchContent">
+                Yükleniyor...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        let currentUser = null;
+        let isGameRunning = false;
+
+        // Giriş
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginButton');
+
+            if (!username || !password) {
+                errorMsg.textContent = 'Lütfen tüm alanları doldurun';
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Giriş yapılıyor...';
+            errorMsg.textContent = '';
+
+            const result = await ipcRenderer.invoke('login', username, password);
+
+            if (result.success) {
+                currentUser = result;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainContainer').classList.remove('hidden');
+                document.getElementById('displayUsername').textContent = result.username;
+                document.getElementById('userAvatar').src = `https://crafthead.net/helm/${result.username}/140`;
+                loadPatchNotes();
+            } else {
+                errorMsg.textContent = result.error;
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Giriş Yap';
+            }
+        });
+
+        // Enter ile giriş
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('loginButton').click();
+        });
+
+        // Yama notları
+        async function loadPatchNotes() {
+            const notes = await ipcRenderer.invoke('get-patch-notes');
+            document.getElementById('patchContent').innerHTML = notes.notes || 'Yama notları yok.';
+        }
+
+        // Oyunu başlat
+        document.getElementById('playSection').addEventListener('click', async () => {
+            if (isGameRunning) return;
+
+            const playBtn = document.getElementById('playButton');
+            const playSection = document.getElementById('playSection');
+            
+            playBtn.textContent = 'BAŞLATILIYOR...';
+            playSection.classList.add('disabled');
+            isGameRunning = true;
+
+            const result = await ipcRenderer.invoke('launch-game', currentUser);
+
+            if (!result.success) {
+                alert('Oyun başlatılamadı: ' + result.error);
+                playBtn.textContent = 'OYNA';
+                playSection.classList.remove('disabled');
+                isGameRunning = false;
+            }
+        });
+
+        // Oyun durumu
+        ipcRenderer.on('game-status', (event, status) => {
+            document.getElementById('playButton').textContent = status.toUpperCase();
+        });
+
+        ipcRenderer.on('game-closed', () => {
+            document.getElementById('playButton').textContent = 'OYNA';
+            document.getElementById('playSection').classList.remove('disabled');
+            isGameRunning = false;
+        });
+
+        // Güncelleme
+        ipcRenderer.on('update-available', (event, version) => {
+            document.getElementById('updateMessage').textContent = `Yeni sürüm (v${version}) mevcut!`;
+            document.getElementById('updatePopup').style.display = 'block';
+        });
+
+        document.getElementById('updateButton').addEventListener('click', () => {
+            document.getElementById('updateButton').style.display = 'none';
+            document.getElementById('progressBar').style.display = 'block';
+            ipcRenderer.send('start-update');
+        });
+
+        ipcRenderer.on('download-progress', (event, progress) => {
+            const percent = Math.round(progress.percent);
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressFill').textContent = percent + '%';
+        });
+
+        ipcRenderer.on('update-downloaded', () => {
+            document.getElementById('updateMessage').textContent = 'Güncelleme hazır! Yeniden başlatılıyor...';
+            setTimeout(() => ipcRenderer.send('install-update'), 2000);
+        });
+    </script>
+</body>
+</html>
