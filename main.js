@@ -127,7 +127,7 @@ ipcMain.handle('get-patch-notes', async () => {
 // ==================== MINECRAFT BAŞLATMA ====================
 ipcMain.handle('launch-game', async (event, userData) => {
   try {
-    const mcPath = path.join(app.getPath('appData'), '.ozelmc');
+    const mcPath = path.join(app.getPath('appData'), '.ackcraft');
     const version = CONFIG.MC_VERSION;
     const useFabric = CONFIG.USE_FABRIC;
     
