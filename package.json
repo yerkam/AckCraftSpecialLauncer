@@ -1,0 +1,36 @@
+{
+  "name": "mc-launcher",
+  "version": "1.0.0",
+  "description": "Private Launcher",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.ozelmc.launcher",
+    "productName": "AckCraft Launcher",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "yerkam",
+      "repo": "AckCraftSpecialLauncer"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "electron-updater": "^6.3.0",
+    "adm-zip": "^0.5.10"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}
