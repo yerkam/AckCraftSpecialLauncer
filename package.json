@@ -1,6 +1,6 @@
 {
   "name": "Ack_Craft_Launcer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Private Server Launcher",
   "main": "main.js",
   "scripts": {
